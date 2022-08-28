@@ -7,6 +7,7 @@
 // @match        https://www.twitch.tv/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
+// @run-at document-idle
 // ==/UserScript==
 
 async function run(){
