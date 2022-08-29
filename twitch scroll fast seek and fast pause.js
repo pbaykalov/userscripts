@@ -26,7 +26,14 @@ async function run(){
     video.eventListenerList["pause"].forEach((l)=>{video.removeEventListener("pause",l.listener,l.options)});
     video.eventListenerList["ratechange"].forEach((l)=>{video.removeEventListener("ratechange",l.listener,l.options)});
 
-
+    while(true){
+        try{
+            document.querySelectorAll(".extension-view__iframe")[0].parentNode.removeChild(document.querySelectorAll(".extension-view__iframe")[0]);
+            break;
+        } catch (e){
+            await new Promise(r => setTimeout(r, 100));
+        }
+    }
 
     document.querySelector(".click-handler").addEventListener("wheel", (e)=>{
         if(!e.altKey){
