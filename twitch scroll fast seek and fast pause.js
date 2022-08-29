@@ -14,6 +14,7 @@ async function run(){
     //setTimeout(()=>{
     //document.addEventListener('load', ()=>{
     'use strict';
+
     var video=document.querySelector("video");
     while(video==null){
         video=document.querySelector("video");
@@ -26,15 +27,18 @@ async function run(){
     video.eventListenerList["pause"].forEach((l)=>{video.removeEventListener("pause",l.listener,l.options)});
     video.eventListenerList["ratechange"].forEach((l)=>{video.removeEventListener("ratechange",l.listener,l.options)});
 
-    while(true){
-        try{
-            document.querySelectorAll(".extension-view__iframe")[0].parentNode.removeChild(document.querySelectorAll(".extension-view__iframe")[0]);
-            break;
-        } catch (e){
-            await new Promise(r => setTimeout(r, 100));
-        }
-    }
-
+    //while(false){
+    //    console.log("trying to remove iframe");
+    //    try{
+    //        document.querySelectorAll(".extension-view__iframe")[0].parentNode.removeChild(document.querySelectorAll(".extension-view__iframe")[0]);
+    //        console.log("removed iframe")
+    //        break;
+    //    } catch (e){
+    //        await new Promise(r => setTimeout(r, 200));
+//
+    //    }
+    //}
+//
     document.querySelector(".click-handler").addEventListener("wheel", (e)=>{
         if(!e.altKey){
             var newTime = video.currentTime+3*(-Math.sign(e.deltaY));
@@ -81,6 +85,13 @@ async function run(){
         }
     };
 
+    console.log("trying to remove iframe");
+    try{
+        document.querySelectorAll(".extension-view__iframe")[0].parentNode.removeChild(document.querySelectorAll(".extension-view__iframe")[0]);
+        console.log("removed iframe")
+    } catch (e){
+        await new Promise(r => setTimeout(r, 200));
+    }
 
     // Your code here...
     //},4000);
