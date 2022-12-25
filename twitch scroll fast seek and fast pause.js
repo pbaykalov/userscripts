@@ -10,7 +10,11 @@
 // @run-at document-idle
 // ==/UserScript==
 
-async function run(){
+//disable retarded BetterTTV chat colours which override Twitch' own readability setting
+//Element.prototype.__bttvParsed=true
+
+window.twitchImprover = async function (){
+
     //setTimeout(()=>{
     //document.addEventListener('load', ()=>{
     'use strict';
@@ -40,10 +44,12 @@ async function run(){
     //}
 //
     document.querySelector(".click-handler").addEventListener("wheel", (e)=>{
-        if(!e.altKey){
+        if(!e.shiftKey && !e.ctrlKey){
             var newTime = video.currentTime+3*(-Math.sign(e.deltaY));
-            video.fastSeek(Math.min(newTime,video.buffered.end(0)));
-        } else {
+            //video.fastSeek(Math.min(newTime,video.buffered.end(0)));
+            //фаст ломает синхронизацию со звуком
+            video.currentTime=Math.min(newTime,video.buffered.end(0));
+        } else if(e.shiftKey) {
             if(e.deltaY<0){
                 video.playbackRate*=1.1;
             }else{
@@ -52,7 +58,7 @@ async function run(){
         }
     } );
     document.querySelector(".click-handler").addEventListener("click", (e)=>{
-        if (e.button === 0 && e.ctrlKey ){
+        if (e.button == 0 && e.ctrlKey ){
             if(video.paused){
                 video.play();
             }else{
@@ -67,7 +73,16 @@ async function run(){
 
     } );
     document.body.onmousedown = function(e) {
-        if (e.button === 1 && !e.altKey){
+        var r = video.getBoundingClientRect();
+        if(
+            e.clientX<r.left ||
+            e.clientX>r.right ||
+            e.clientY>r.bottom ||
+            e.clientX<r.top
+        ){
+           return true;
+        }
+        if (e.button == 1 && !e.altKey ){
             if(video.paused){
                 video.play();
             }else{
@@ -75,7 +90,7 @@ async function run(){
             }
             return false;
         }
-        if(e.button === 1 && e.altKey){
+        if(e.button == 1 && e.altKey){
             if(video.style.transform==""){
                 video.style.transform="scaleY(1.111111111)";
             } else {
@@ -93,9 +108,28 @@ async function run(){
         await new Promise(r => setTimeout(r, 200));
     }
 
+    await new Promise(r => setTimeout(r, 3000));
+
+    try{
+        document.querySelectorAll(".extension-view__iframe")[0].parentNode.removeChild(document.querySelectorAll(".extension-view__iframe")[0]);
+        console.log("removed iframe")
+    } catch (e){
+        await new Promise(r => setTimeout(r, 200));
+    }
+
     // Your code here...
     //},4000);
     //});
 }
 
-run();
+window.refreshVideo = async function (){
+    var video=document.querySelector("video");
+    await new Promise(r => setTimeout(r, 5000));
+    video.eventListenerList["pause"].forEach((l)=>{video.removeEventListener("pause",l.listener,l.options)});
+    video.eventListenerList["ratechange"].forEach((l)=>{video.removeEventListener("ratechange",l.listener,l.options)});
+}
+
+history._pushState = history.pushState
+history.pushState = (a,b,c)=>{ history._pushState(a,b,c); window.refreshVideo() }
+window.addEventListener('popstate',(e) => { window.refreshVideo() })
+window.twitchImprover();
