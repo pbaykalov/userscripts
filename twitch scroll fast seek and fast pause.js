@@ -20,6 +20,7 @@ window.twitchImprover = async function (){
     'use strict';
 
     var video=document.querySelector("video");
+    window.video=video;
     while(video==null){
         video=document.querySelector("video");
         await new Promise(r => setTimeout(r, 100));
@@ -124,9 +125,12 @@ window.twitchImprover = async function (){
 
 window.refreshVideo = async function (){
     var video=document.querySelector("video");
-    await new Promise(r => setTimeout(r, 5000));
-    video.eventListenerList["pause"].forEach((l)=>{video.removeEventListener("pause",l.listener,l.options)});
-    video.eventListenerList["ratechange"].forEach((l)=>{video.removeEventListener("ratechange",l.listener,l.options)});
+    if(video!==null) {
+        video.eventListenerList["pause"].forEach((l)=>{video.removeEventListener("pause",l.listener,l.options)});
+        video.eventListenerList["ratechange"].forEach((l)=>{video.removeEventListener("ratechange",l.listener,l.options)});
+    } else {
+        window.twitchImprover();
+    }
 }
 
 history._pushState = history.pushState
