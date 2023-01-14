@@ -13,127 +13,132 @@
 //disable retarded BetterTTV chat colours which override Twitch' own readability setting
 //Element.prototype.__bttvParsed=true
 
+window.scaleList={};
+
 window.twitchImprover = async function (){
 
-    //setTimeout(()=>{
-    //document.addEventListener('load', ()=>{
-    'use strict';
+    while(true){
+        //setTimeout(()=>{
+        //document.addEventListener('load', ()=>{
+        'use strict';
 
-    var video=document.querySelector("video");
-    window.video=video;
-    while(video==null){
-        video=document.querySelector("video");
-        await new Promise(r => setTimeout(r, 100));
-    }
+        var video=document.querySelector("video");
 
-    while(video.eventListenerList["pause"]==null){
-        await new Promise(r => setTimeout(r, 100));
-    }
-    video.eventListenerList["pause"].forEach((l)=>{video.removeEventListener("pause",l.listener,l.options)});
-    video.eventListenerList["ratechange"].forEach((l)=>{video.removeEventListener("ratechange",l.listener,l.options)});
+        if(video==null){
+            window.video=video;
+            await new Promise(r => setTimeout(r, 100));
+            continue;
+        }
 
-    //while(false){
-    //    console.log("trying to remove iframe");
-    //    try{
-    //        document.querySelectorAll(".extension-view__iframe")[0].parentNode.removeChild(document.querySelectorAll(".extension-view__iframe")[0]);
-    //        console.log("removed iframe")
-    //        break;
-    //    } catch (e){
-    //        await new Promise(r => setTimeout(r, 200));
-//
-    //    }
-    //}
-//
-    document.querySelector(".click-handler").addEventListener("wheel", (e)=>{
-        if(!e.shiftKey && !e.ctrlKey){
-            var newTime = video.currentTime+3*(-Math.sign(e.deltaY));
-            //video.fastSeek(Math.min(newTime,video.buffered.end(0)));
-            //фаст ломает синхронизацию со звуком
-            video.currentTime=Math.min(newTime,video.buffered.end(0));
-        } else if(e.shiftKey) {
-            if(e.deltaY<0){
-                video.playbackRate*=1.1;
-            }else{
-                video.playbackRate/=1.1;
+        if(window.video!==null ){
+            try{
+                video.eventListenerList["pause"].forEach((l)=>{video.removeEventListener("pause",l.listener,l.options)});
+                video.eventListenerList["ratechange"].forEach((l)=>{video.removeEventListener("ratechange",l.listener,l.options)});
             }
-        }
-    } );
-    document.querySelector(".click-handler").addEventListener("click", (e)=>{
-        if (e.button == 0 && e.ctrlKey ){
-            if(video.paused){
-                video.play();
-            }else{
-                video.pause();
-                video.eventListenerList["pause"].forEach((l)=>{l.listener(new Event("wtf"))});
-            }
-        }
-        if (e.button === 0 && e.altKey ){
-            video.playbackRate=1;
-
+            catch{}
+            await new Promise(r => setTimeout(r, 1000));
+            continue;
         }
 
-    } );
-    document.body.onmousedown = function(e) {
-        var r = video.getBoundingClientRect();
-        if(
-            e.clientX<r.left ||
-            e.clientX>r.right ||
-            e.clientY>r.bottom ||
-            e.clientX<r.top
-        ){
-           return true;
+        window.video=video;
+
+        while(video.eventListenerList["pause"]==null){
+            await new Promise(r => setTimeout(r, 1000));
         }
-        if (e.button == 1 && !e.altKey ){
-            if(video.paused){
-                video.play();
-            }else{
-                video.pause();
-            }
-            return false;
-        }
-        if(e.button == 1 && e.altKey){
-            if(video.style.transform==""){
-                video.style.transform="scaleY(1.111111111)";
-            } else {
-                video.style.transform="";
-            }
-            return false;
-        }
-    };
-
-    console.log("trying to remove iframe");
-    try{
-        document.querySelectorAll(".extension-view__iframe")[0].parentNode.removeChild(document.querySelectorAll(".extension-view__iframe")[0]);
-        console.log("removed iframe")
-    } catch (e){
-        await new Promise(r => setTimeout(r, 200));
-    }
-
-    await new Promise(r => setTimeout(r, 3000));
-
-    try{
-        document.querySelectorAll(".extension-view__iframe")[0].parentNode.removeChild(document.querySelectorAll(".extension-view__iframe")[0]);
-        console.log("removed iframe")
-    } catch (e){
-        await new Promise(r => setTimeout(r, 200));
-    }
-
-    // Your code here...
-    //},4000);
-    //});
-}
-
-window.refreshVideo = async function (){
-    var video=document.querySelector("video");
-    if(video!==null) {
         video.eventListenerList["pause"].forEach((l)=>{video.removeEventListener("pause",l.listener,l.options)});
         video.eventListenerList["ratechange"].forEach((l)=>{video.removeEventListener("ratechange",l.listener,l.options)});
-    } else {
-        window.twitchImprover();
+
+        //while(false){
+        //    console.log("trying to remove iframe");
+        //    try{
+        //        document.querySelectorAll(".extension-view__iframe")[0].parentNode.removeChild(document.querySelectorAll(".extension-view__iframe")[0]);
+        //        console.log("removed iframe")
+        //        break;
+        //    } catch (e){
+        //        await new Promise(r => setTimeout(r, 200));
+        //
+        //    }
+        //}
+        //
+        document.querySelector(".click-handler").addEventListener("wheel", (e)=>{
+            if(!e.shiftKey && !e.ctrlKey){
+                var newTime = video.currentTime+3*(-Math.sign(e.deltaY));
+                //video.fastSeek(Math.min(newTime,video.buffered.end(0)));
+                //фаст ломает синхронизацию со звуком
+                video.currentTime=Math.min(newTime,video.buffered.end(0));
+            } else if(e.shiftKey) {
+                if(e.deltaY<0){
+                    video.playbackRate*=1.1;
+                }else{
+                    video.playbackRate/=1.1;
+                }
+            }
+        } );
+        document.querySelector(".click-handler").addEventListener("click", (e)=>{
+            if (e.button == 0 && e.ctrlKey ){
+                if(video.paused){
+                    video.play();
+                }else{
+                    video.pause();
+                    video.eventListenerList["pause"].forEach((l)=>{l.listener(new Event("wtf"))});
+                }
+            }
+            if (e.button === 0 && e.altKey ){
+                video.playbackRate=1;
+
+            }
+
+        } );
+        document.body.onmousedown = function(e) {
+            var r = video.getBoundingClientRect();
+            if(
+                e.clientX<r.left ||
+                e.clientX>r.right ||
+                e.clientY>r.bottom ||
+                e.clientX<r.top
+            ){
+                return true;
+            }
+            if (e.button == 1 && !e.altKey ){
+                if(video.paused){
+                    video.play();
+                }else{
+                    video.pause();
+                }
+                return false;
+            }
+            if(e.button == 1 && e.altKey){
+                //             switch(window.scaleVar){
+                //                     video.style.transform="scaleY(1.111111111)";
+
+                //             }
+
+                if(video.style.transform==""){
+                    video.style.transform="scaleY(1.111111111)";
+                } else {
+                    video.style.transform="";
+                }
+                return false;
+            }
+        };
+
+        console.log("trying to remove iframe");
+        try{
+            document.querySelectorAll(".extension-view__iframe")[0].parentNode.removeChild(document.querySelectorAll(".extension-view__iframe")[0]);
+            console.log("removed iframe")
+        } catch (e){
+            await new Promise(r => setTimeout(r, 200));
+        }
+
+        await new Promise(r => setTimeout(r, 3000));
+
+        try{
+            document.querySelectorAll(".extension-view__iframe")[0].parentNode.removeChild(document.querySelectorAll(".extension-view__iframe")[0]);
+            console.log("removed iframe")
+        } catch (e){
+            await new Promise(r => setTimeout(r, 200));
+        }
     }
 }
 
-history._pushState = history.pushState
-history.pushState = (a,b,c)=>{ history._pushState(a,b,c); window.refreshVideo() }
-window.addEventListener('popstate',(e) => { window.refreshVideo() })
 window.twitchImprover();
