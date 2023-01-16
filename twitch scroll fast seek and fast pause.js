@@ -10,6 +10,9 @@
 // @run-at document-idle
 // ==/UserScript==
 
+//disable retarded BetterTTV chat colours which override Twitch' own readability setting
+//Element.prototype.__bttvParsed=true
+
 window.scaleList={};
 
 window.twitchImprover = async function (){
@@ -30,6 +33,9 @@ window.twitchImprover = async function (){
         if(window.video!=null ){
             try{
                 video.eventListenerList["pause"].forEach((l)=>{video.removeEventListener("pause",l.listener,l.options)});
+            }
+            catch{}
+            try{
                 video.eventListenerList["ratechange"].forEach((l)=>{video.removeEventListener("ratechange",l.listener,l.options)});
             }
             catch{}
