@@ -31,6 +31,7 @@ function traverse(node){
     if(
         style.display != 'none' &&
         style.visibility != "hidden" &&
+        style.visibility != "collapse" &&
         (
             parseInt(style.top)+parseInt(style.height) < innHeight/3
             || parseInt(style.top)> innHeight*2/3
@@ -40,7 +41,7 @@ function traverse(node){
         parseInt(style.height)<innHeight/3
     ){
         window.fixed_items.push([node,style.visibility,style.display]);
-        node.style.visibility = "hidden";
+        node.style.visibility = "collapse";
     }
 
     var children = Array.from(node.children);
@@ -56,7 +57,7 @@ function unfixAll() {
     } else {
         window.fixed_items.forEach(
             function(el) {
-                el[0].style.visibility = "hidden";
+                el[0].style.visibility = "collapse";
             }
         )
     }
