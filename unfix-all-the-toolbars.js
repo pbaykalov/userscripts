@@ -16,13 +16,16 @@ var counter = 0;
 window.badPosition=['static','fixed','sticky','absolute']
 
 function traverse(node){
-    //console.log('traversing')
-    // console.log(node)
+    console.log('traversing')
     var style = window.getComputedStyle(node);
     var innHeightPx = window.innerHeight*window.devicePixelRatio;
     var innHeight = window.innerHeight;
 
-    if( ! window.badPosition.includes(style.position))
+    if(style.display!='none' && style.visibility!='hidden')
+        console.log(node)
+
+
+    if( (! window.badPosition.includes(style.position)) && parseInt(style.height) < innHeight)
         return;
 
     if(
@@ -46,7 +49,7 @@ function traverse(node){
 
 
 function unfixAll() {
-    console.log("======= unfix");
+    //console.log("======= unfix");
     if(!searched){
         traverse(document.body);
         searched=true;
