@@ -16,8 +16,8 @@ var counter = 0;
 window.badPosition=['static','fixed','sticky','absolute']
 
 function traverse(node){
-    console.log('traversing')
-    console.log(node)
+    //console.log('traversing')
+    // console.log(node)
     var style = window.getComputedStyle(node);
     var innHeightPx = window.innerHeight*window.devicePixelRatio;
     var innHeight = window.innerHeight;
