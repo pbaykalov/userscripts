@@ -13,32 +13,47 @@ var searched = false;
 var windowHeightSearched = false;
 var counter = 0;
 
-window.badPosition=['static','fixed','sticky','absolute']
+window.badPosition=[
+    // 'static',
+                    'fixed','sticky','absolute']
 
 function traverse(node){
     console.log('traversing')
     var style = window.getComputedStyle(node);
     var innHeightPx = window.innerHeight*window.devicePixelRatio;
     var innHeight = window.innerHeight;
+    var rect = node.getBoundingClientRect();
 
     if(style.display!='none' && style.visibility!='hidden')
         console.log(node)
 
 
-    if( (! window.badPosition.includes(style.position)) && parseInt(style.height) < innHeight)
-        return;
+    //there can be fixed elements on any level except when it's too small already
+    // if( (! window.badPosition.includes(style.position))
+       // && parseInt(style.height) < innHeight
+       // )
+        // return;
 
     if(
+        window.badPosition.includes(style.position) &&
         style.display != 'none' &&
         style.visibility != "hidden" &&
         style.visibility != "collapse" &&
         (
-            parseInt(style.top)+parseInt(style.height) < innHeight/3
-            || parseInt(style.top)> innHeight*2/3
-            || (style.top === "auto" && parseInt(style.bottom)< innHeight/3)
+            rect.top+rect.height < innHeight/3
+            || rect.top> innHeight*2/3
+            //there may be elements with zero size which contain a lot of content
+            //if I find a lot of content inside I should cancel this 'collapse'
 
-        )&&
-        parseInt(style.height)<innHeight/3
+            // parseInt(style.top)+parseInt(style.height) < innHeight/3
+            // || parseInt(style.top)> innHeight*2/3
+            // || (style.top === "auto" && parseInt(style.bottom)< innHeight/3)
+            // //destructive
+            // //if I find page content deeper I should cancel this 'collapse'
+            // || (style.top === "auto" && style.bottom === 'auto' && parseInt(style.height)<innHeight/3)
+
+        )
+        // &&parseInt(style.height)<innHeight/3
     ){
         window.fixed_items.push([node,style.visibility,style.display]);
         node.style.visibility = "collapse";
@@ -76,7 +91,7 @@ function onScroll()
 {
     if (window.scrollY > 0)
     {
-        if (window.scrollY > window.innerHeight+700 && windowHeightSearched==false)
+        if (window.scrollY > window.innerHeight*1.5 && windowHeightSearched==false)
         {
             searched=false;
             windowHeightSearched=true;
@@ -94,3 +109,4 @@ function onScroll()
 
 window.addEventListener("scroll", onScroll);
 window.unfixAll=unfixAll;
+window.fixBack=fixBack;
